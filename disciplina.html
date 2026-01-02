@@ -115,7 +115,7 @@
   <!-- SENHA -->
   <div id="senhaBox" class="hidden">
     <h2>🔐 Senha da Modalidade</h2>
-    <input type="password" id="senhaInput" placeholder="Senha: modalidade+ano">
+    <input type="password" id="senhaInput" placeholder="Senha: solicite ao professor">
     <button id="btnSenha">Acessar</button>
     <div id="erroSenha" class="error hidden">Senha incorreta</div>
   </div>
@@ -151,17 +151,17 @@
   };
 
   const disciplinasPorTurma = {
-    "1A": ["Lógica de Programação", "Informática Básica"],
-    "1B": ["Lógica de Programação"],
-    "1C": ["Informática Básica"],
-    "1 TI": ["Algoritmos", "Banco de Dados"],
-    "2 TI": ["Programação Web"],
-    "3 TI": ["Engenharia de Software"],
-    "Módulo I": ["Fundamentos de TI"],
-    "Módulo II": ["Redes"],
-    "Módulo III": ["Programação"],
-    "Módulo IV": ["Sistemas"],
-    "Módulo V": ["Projeto Final"]
+    "1A": ["Lógica de Programação", "Informática Básica", "Matemática", "Português", "Projeto de Vida"],
+    "1B": ["Lógica de Programação", "Informática Básica", "Matemática", "Português", "Ciências"],
+    "1C": ["Lógica de Programação", "Informática Básica", "Matemática", "Português", "Geografia"],
+    "1 TI": ["Algoritmos", "Lógica", "Matemática", "Português", "Informática"],
+    "2 TI": ["POO", "Banco de Dados", "Web", "Matemática", "Português"],
+    "3 TI": ["Engenharia de Software", "Redes", "Segurança", "Web Avançado", "Projeto"],
+    "Módulo I": ["Fundamentos de TI", "Matemática", "Português", "Informática", "Cidadania"],
+    "Módulo II": ["Redes", "Informática", "Matemática", "Português", "Projeto"],
+    "Módulo III": ["Programação", "Banco de Dados", "Web", "Ética", "Projeto"],
+    "Módulo IV": ["Sistemas", "Redes", "Web", "Gestão", "Projeto"],
+    "Módulo V": ["Projeto Final", "Empreendedorismo", "Gestão", "Ética", "Tecnologia"]
   };
 
   const ano = document.getElementById("ano");
@@ -184,17 +184,38 @@
     });
   }
 
-  function gerarTabelaAulas() {
-    let rows = '';
-    for (let i = 1; i <= 40; i++) {
-      rows += `<tr>
-        <td>Aula ${i}</td>
-        <td><a href="#">Slides</a></td>
-        <td></td>
-        <td></td>
-      </tr>`;
-    }
-    return rows;
+  function gerarTabelaUnidades() {
+    const unidades = [
+      { nome: "Unidade I", inicio: 1, fim: 15 },
+      { nome: "Unidade II", inicio: 16, fim: 30 },
+      { nome: "Unidade III", inicio: 31, fim: 40 }
+    ];
+
+    let html = '';
+
+    unidades.forEach(u => {
+      html += `<h3>${u.nome}</h3>`;
+      html += `<table>
+        <tr>
+          <th>Aula</th>
+          <th>Slide</th>
+          <th>Material</th>
+          <th>Atividade</th>
+        </tr>`;
+
+      for (let i = u.inicio; i <= u.fim; i++) {
+        html += `<tr>
+          <td>Aula ${i}</td>
+          <td><a href="#">Slides</a></td>
+          <td></td>
+          <td></td>
+        </tr>`;
+      }
+
+      html += `</table>`;
+    });
+
+    return html;
   }
 
   function mostrarDisciplinas(turmaSelecionada) {
@@ -206,15 +227,7 @@
       bloco.className = 'disciplina';
       bloco.innerHTML = `
         <h2>📘 ${nome}</h2>
-        <table>
-          <tr>
-            <th>Aula</th>
-            <th>Slide</th>
-            <th>Material</th>
-            <th>Atividade</th>
-          </tr>
-          ${gerarTabelaAulas()}
-        </table>
+        ${gerarTabelaUnidades()}
         <div class="links">
           <a href="#">📚 Classroom</a>
           <a href="#">📝 Notas</a>
@@ -227,6 +240,16 @@
   }
 
   ano.addEventListener("change", () => {
+    modalidade.disabled = !ano.value;
+    modalidade.value = "";
+    senhaBox.classList.add("hidden");
+    senhaInput.value = "";
+    erroSenha.classList.add("hidden");
+    turmaBox.classList.add("hidden");
+    turma.innerHTML = "";
+    disciplinasDiv.innerHTML = "";
+    disciplinasDiv.classList.add("hidden");
+  });("change", () => {
     modalidade.disabled = !ano.value;
     modalidade.value = "";
     senhaBox.classList.add("hidden");
