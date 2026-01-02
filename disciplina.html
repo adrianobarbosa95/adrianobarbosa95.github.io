@@ -93,10 +93,10 @@
 </header>
 
 <main>
-<!-- BOTÃO VOLTAR -->
-<div id="voltarBox" class="hidden" style="margin-top:20px;">
-<a href="https://adrianobarbosa95.github.io" id="btnVoltar">⬅ Voltar</a>
-</div>
+ <!-- BOTÃO VOLTAR -->
+  <div id="voltarBox" class="hidden" style="margin-top:20px;">
+    <button id="btnVoltar">⬅ Voltar</button>
+  </div>
   <!-- ANO -->
   <h2>📅 Ano</h2>
   <select id="ano">
@@ -118,7 +118,7 @@
   <!-- SENHA -->
   <div id="senhaBox" class="hidden">
     <h2>🔐 Senha da Modalidade</h2>
-    <input type="password" id="senhaInput" placeholder="Senha: solicite ao professor">
+    <input type="password" id="senhaInput" placeholder="Senha: solicitar ao professor">
     <button id="btnSenha">Acessar</button>
     <div id="erroSenha" class="error hidden">Senha incorreta</div>
   </div>
@@ -131,6 +131,8 @@
 
   <!-- DISCIPLINAS -->
   <div id="disciplinas" class="hidden"></div>
+
+ 
 
 </main>
 
@@ -176,6 +178,8 @@
   const turmaBox = document.getElementById("turmaBox");
   const turma = document.getElementById("turma");
   const disciplinasDiv = document.getElementById("disciplinas");
+  const voltarBox = document.getElementById("voltarBox");
+  const btnVoltar = document.getElementById("btnVoltar");
 
   function gerarTurmas(mod) {
     turma.innerHTML = '<option value="">Selecione a turma</option>';
@@ -240,6 +244,7 @@
     });
 
     disciplinasDiv.classList.toggle('hidden', lista.length === 0);
+    voltarBox.classList.toggle('hidden', lista.length === 0);
   }
 
   ano.addEventListener("change", () => {
@@ -277,6 +282,13 @@
     } else {
       erroSenha.classList.remove("hidden");
     }
+  });
+
+  btnVoltar.addEventListener("click", () => {
+    disciplinasDiv.innerHTML = "";
+    disciplinasDiv.classList.add("hidden");
+    voltarBox.classList.add("hidden");
+    turma.value = "";
   });
 
   turma.addEventListener("change", () => {
