@@ -90,13 +90,15 @@
 <header>
   <h1>📚 Disciplinas</h1>
   <p>Materiais, aulas, atividades e notas</p>
+  <div style="margin-top:15px;">
+    <a href="https://adrianobarbosa95.github.io/" style="display:inline-block;background:#2563eb;color:#fff;padding:10px 18px;border-radius:8px;text-decoration:none;font-weight:600;">
+      ⬅ Voltar para Home
+    </a>
+  </div>
 </header>
 
 <main>
- <!-- BOTÃO VOLTAR -->
-  <div id="voltarBox" class="hidden" style="margin-top:20px;">
-    <button id="btnVoltar">⬅ Voltar</button>
-  </div>
+
   <!-- ANO -->
   <h2>📅 Ano</h2>
   <select id="ano">
@@ -118,7 +120,7 @@
   <!-- SENHA -->
   <div id="senhaBox" class="hidden">
     <h2>🔐 Senha da Modalidade</h2>
-    <input type="password" id="senhaInput" placeholder="Senha: solicitar ao professor">
+    <input type="password" id="senhaInput" placeholder="Senha: modalidade+ano">
     <button id="btnSenha">Acessar</button>
     <div id="erroSenha" class="error hidden">Senha incorreta</div>
   </div>
@@ -132,7 +134,10 @@
   <!-- DISCIPLINAS -->
   <div id="disciplinas" class="hidden"></div>
 
- 
+  <!-- BOTÃO VOLTAR -->
+  <div id="voltarBox" class="hidden" style="margin-top:20px;">
+    <button id="btnVoltar">⬅ Voltar para Turmas</button>
+  </div>
 
 </main>
 
