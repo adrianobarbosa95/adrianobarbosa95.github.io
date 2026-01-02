@@ -75,7 +75,39 @@
       padding: 25px 15px;
       font-size: 0.95rem;
     }
-  </style>
+      
+    .social-wave {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 28px;
+      margin-top: 30px;
+    }
+
+    .social-wave a {
+      display: inline-flex;
+      width: 46px;
+      height: 46px;
+      padding: 10px;
+      background: #ffffff;
+      border-radius: 50%;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+      transition: transform .3s ease, box-shadow .3s ease;
+    }
+
+    .social-wave a img {
+      width: 100%;
+      height: 100%;
+      filter: invert(18%) sepia(9%) saturate(748%) hue-rotate(176deg) brightness(92%) contrast(94%);
+    }
+
+    
+    .social-wave a:hover {
+      transform: translateY(-16px) scale(1.1);
+      box-shadow: 0 14px 30px rgba(0,0,0,0.18);
+    }
+
+</style>
 </head>
 <body>
 
@@ -91,24 +123,36 @@
 
 <main>
   <section>
-    <h2>👨‍🏫 Perfil Profissional</h2>
-    <p>Este é meu portal acadêmico e profissional. Aqui você encontra minhas disciplinas, materiais de aula, currículo, notas e links institucionais organizados por curso, modalidade e ano.</p>
+    <h2>Perfil</h2>
+    <p><strong>Adriano Barbosa de Jesus</strong> é professor de Informática no ensino técnico, atuando no Colégio Estadual de Tempo Integral Teodoro Sampaio.</p>
+    <p>É mestrando em Ciências da Computação pela Universidade Federal da Bahia (UFBA), pós-graduado em Engenharia de Software e licenciado em Computação pelo IFBA – Campus Santo Amaro. 
+    Além da docência, atua como desenvolvedor de software. Sua pesquisa acadêmica investiga a <strong>confiança interpessoal em ambientes virtuais de aprendizagem (e-learning)</strong> e seus impactos na experiência educacional.</p>
   </section>
 
   <section>
-    <h2>🔗 Acesso Rápido</h2>
+    <h2>Acesso Rápido</h2>
     <div class="cards">
-      <div class="card"><a href="curriculo.pdf" target="_blank">📄 Currículo (PDF)</a></div>
       <div class="card"><a href="disciplinas.html">📚 Disciplinas</a></div>
-      <div class="card"><a href="notas.html">📝 Notas</a></div>
-      <div class="card"><a href="https://github.com/adrianobarbosa95" target="_blank">💻 GitHub</a></div>
       <div class="card"><a href="https://lattes.cnpq.br/0443928473759670" target="_blank">🎓 Currículo Lattes</a></div>
+      <div class="card"><a href="https://github.com/adrianobarbosa95" target="_blank">💻 GitHub</a></div>
+      <div class="card"><a href="mailto:adrianobarbosa95@gmail.com">✉️ Contato</a></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="social-wave">
+      <a href="https://www.instagram.com/" target="_blank" title="Instagram"><img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/instagram.svg" alt="Instagram"></a>
+      <a href="https://www.facebook.com/" target="_blank" title="Facebook"><img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/facebook.svg" alt="Facebook"></a>
+      <a href="https://twitter.com/" target="_blank" title="Twitter / X"><img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/x.svg" alt="Twitter"></a>
+      <a href="https://www.linkedin.com/in/adrianobarbosa95" target="_blank" title="LinkedIn"><img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/linkedin.svg" alt="LinkedIn"></a>
+      <a href="https://github.com/adrianobarbosa95" target="_blank" title="GitHub"><img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/github.svg" alt="GitHub"></a>
+      <a href="mailto:adrianobarbosa95@gmail.com" title="E-mail"><img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/gmail.svg" alt="E-mail"></a>
     </div>
   </section>
 </main>
 
 <footer>
-  © 2026 – Professor Adriano Barbosa · GitHub Pages
+  © 2026 – Professor Adriano Barbosa · Portal Acadêmico
 </footer>
 
 </body>
