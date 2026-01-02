@@ -1,191 +1,265 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<title>Disciplinas</title>
+  <meta charset="UTF-8">
+  <title>Disciplinas | Prof. Adriano Barbosa</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: #f3f4f6;
+      color: #111827;
+    }
 
-<style>
-body {
-  font-family: Arial, sans-serif;
-  background: #f5f6fa;
-  padding: 20px;
-}
+    header {
+      background: #1f2937;
+      color: #fff;
+      padding: 30px 20px;
+      text-align: center;
+    }
 
-select, input {
-  padding: 8px;
-  margin: 8px 0;
-  width: 100%;
-  max-width: 400px;
-}
+    main {
+      max-width: 1200px;
+      margin: auto;
+      padding: 40px 20px;
+    }
 
-.hidden {
-  display: none;
-}
+    h2 { margin-top: 30px; }
 
-.disciplina {
-  background: #ffffff;
-  padding: 10px;
-  margin: 8px 0;
-  border-radius: 6px;
-  cursor: pointer;
-  border-left: 5px solid #2c7be5;
-}
+    select, input, button {
+      padding: 10px;
+      font-size: 1rem;
+      margin-top: 10px;
+      max-width: 360px;
+      width: 100%;
+    }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 25px;
-}
+    button {
+      background: #2563eb;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
 
-th, td {
-  border: 1px solid #ccc;
-  padding: 6px;
-  text-align: center;
-}
+    button:hover { background: #1d4ed8; }
 
-th {
-  background: #2c7be5;
-  color: white;
-}
+    .hidden { display: none; }
+    .error { color: #dc2626; margin-top: 10px; }
 
-h3, h4 {
-  margin-top: 25px;
-}
-</style>
+    .disciplina {
+      background: #fff;
+      padding: 20px;
+      border-radius: 14px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+      margin-top: 40px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    th, td {
+      border: 1px solid #e5e7eb;
+      padding: 8px;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+
+    th {
+      background: #f9fafb;
+    }
+
+    .links {
+      margin-top: 10px;
+    }
+
+    .links a {
+      margin-right: 15px;
+      text-decoration: none;
+      font-weight: 600;
+      color: #2563eb;
+    }
+  </style>
 </head>
-
 <body>
 
-<h2>Disciplinas</h2>
+<header>
+  <h1>📚 Disciplinas</h1>
+  <p>Materiais, aulas, atividades e notas</p>
+</header>
 
-<!-- Ano -->
-<select id="ano">
-  <option value="">Selecione o ano</option>
-  <option value="2026">2026</option>
-</select>
+<main>
 
-<!-- Modalidade -->
-<select id="modalidade" class="hidden">
-  <option value="">Selecione a modalidade</option>
-  <option value="integral">Integral</option>
-  <option value="integrado">Técnico Integrado</option>
-  <option value="proeja">PROEJA</option>
-  <option value="subsequente">Subsequente</option>
-</select>
+  <!-- ANO -->
+  <h2>📅 Ano</h2>
+  <select id="ano">
+    <option value="">Selecione o ano</option>
+    <option value="2026">2026</option>
+    <option value="2027">2027</option>
+  </select>
 
-<!-- Senha -->
-<input type="password" id="senha" class="hidden" placeholder="Senha da modalidade">
+  <!-- MODALIDADE -->
+  <h2>🎓 Modalidade</h2>
+  <select id="modalidade" disabled>
+    <option value="">Selecione a modalidade</option>
+    <option value="Integral">Integral</option>
+    <option value="Integrado">Técnico Integrado</option>
+    <option value="PROEJA">PROEJA</option>
+    <option value="Subsequente">Subsequente</option>
+  </select>
 
-<!-- Turma -->
-<select id="turma" class="hidden"></select>
+  <!-- SENHA -->
+  <div id="senhaBox" class="hidden">
+    <h2>🔐 Senha da Modalidade</h2>
+    <input type="password" id="senhaInput" placeholder="Senha: modalidade+ano">
+    <button id="btnSenha">Acessar</button>
+    <div id="erroSenha" class="error hidden">Senha incorreta</div>
+  </div>
 
-<!-- Disciplinas -->
-<div id="disciplinas"></div>
+  <!-- TURMA -->
+  <div id="turmaBox" class="hidden">
+    <h2>👥 Turma</h2>
+    <select id="turma"></select>
+  </div>
+
+  <!-- DISCIPLINAS -->
+  <div id="disciplinas" class="hidden"></div>
+
+</main>
 
 <script>
-const dados = {
-  "2026": {
-    "integral": {
-      "1A": ["Português", "Matemática", "Informática", "História", "Geografia"],
-      "1B": ["Português", "Matemática", "Informática", "Ciências", "Artes"],
-      "1C": ["Português", "Matemática", "Informática", "Física", "Química"]
-    },
-    "integrado": {
-      "1 TI": ["Lógica", "Português", "Matemática", "Informática", "Redes"],
-      "2 TI": ["POO", "Banco de Dados", "Web", "Português", "Matemática"],
-      "3 TI": ["Redes", "Projeto", "Segurança", "Web", "Empreendedorismo"]
-    },
-    "proeja": {
-      "Módulo I": ["Matemática", "Português", "Informática", "Cidadania", "Trabalho"],
-      "Módulo II": ["Informática", "Redes", "Português", "Matemática", "Projeto"],
-      "Módulo III": ["Banco de Dados", "Web", "Informática", "Projeto", "Ética"],
-      "Módulo IV": ["Projeto", "Redes", "Web", "Banco de Dados", "Gestão"],
-      "Módulo V": ["Projeto Final", "Empreendedorismo", "Ética", "Gestão", "Tecnologia"]
-    },
-    "subsequente": {
-      "Módulo I": ["Algoritmos", "Lógica", "Informática", "Português", "Matemática"],
-      "Módulo II": ["POO", "Banco de Dados", "Web", "Redes", "Projeto"],
-      "Módulo III": ["Projeto Final", "Segurança", "Web Avançado", "Gestão", "Ética"]
+  const passwords = {
+    "Integral2026": "integral2026",
+    "Integrado2026": "integrado2026",
+    "PROEJA2026": "proeja2026",
+    "Subsequente2026": "subsequente2026",
+    "Integral2027": "integral2027",
+    "Integrado2027": "integrado2027",
+    "PROEJA2027": "proeja2027",
+    "Subsequente2027": "subsequente2027"
+  };
+
+  const turmasPorModalidade = {
+    "Integral": ["1A", "1B", "1C"],
+    "Integrado": ["1 TI", "2 TI", "3 TI"],
+    "PROEJA": ["Módulo I", "Módulo II", "Módulo III", "Módulo IV", "Módulo V"],
+    "Subsequente": ["Módulo I", "Módulo II", "Módulo III"]
+  };
+
+  const disciplinasPorTurma = {
+    "1A": ["Lógica de Programação", "Informática Básica"],
+    "1B": ["Lógica de Programação"],
+    "1C": ["Informática Básica"],
+    "1 TI": ["Algoritmos", "Banco de Dados"],
+    "2 TI": ["Programação Web"],
+    "3 TI": ["Engenharia de Software"],
+    "Módulo I": ["Fundamentos de TI"],
+    "Módulo II": ["Redes"],
+    "Módulo III": ["Programação"],
+    "Módulo IV": ["Sistemas"],
+    "Módulo V": ["Projeto Final"]
+  };
+
+  const ano = document.getElementById("ano");
+  const modalidade = document.getElementById("modalidade");
+  const senhaBox = document.getElementById("senhaBox");
+  const btnSenha = document.getElementById("btnSenha");
+  const senhaInput = document.getElementById("senhaInput");
+  const erroSenha = document.getElementById("erroSenha");
+  const turmaBox = document.getElementById("turmaBox");
+  const turma = document.getElementById("turma");
+  const disciplinasDiv = document.getElementById("disciplinas");
+
+  function gerarTurmas(mod) {
+    turma.innerHTML = '<option value="">Selecione a turma</option>';
+    turmasPorModalidade[mod].forEach(t => {
+      const opt = document.createElement("option");
+      opt.value = t;
+      opt.textContent = t;
+      turma.appendChild(opt);
+    });
+  }
+
+  function gerarTabelaAulas() {
+    let rows = '';
+    for (let i = 1; i <= 40; i++) {
+      rows += `<tr>
+        <td>Aula ${i}</td>
+        <td><a href="#">Slides</a></td>
+        <td></td>
+        <td></td>
+      </tr>`;
     }
-  }
-};
-
-const ano = document.getElementById("ano");
-const modalidade = document.getElementById("modalidade");
-const senha = document.getElementById("senha");
-const turma = document.getElementById("turma");
-const disciplinasDiv = document.getElementById("disciplinas");
-
-ano.onchange = () => {
-  modalidade.classList.remove("hidden");
-};
-
-modalidade.onchange = () => {
-  senha.classList.remove("hidden");
-};
-
-senha.onchange = () => {
-  const correta = modalidade.value + ano.value;
-  if (senha.value !== correta) {
-    alert("Senha incorreta");
-    senha.value = "";
-    return;
+    return rows;
   }
 
-  turma.innerHTML = "<option value=''>Selecione a turma</option>";
-  Object.keys(dados[ano.value][modalidade.value]).forEach(t => {
-    turma.innerHTML += `<option>${t}</option>`;
-  });
+  function mostrarDisciplinas(turmaSelecionada) {
+    disciplinasDiv.innerHTML = '';
+    const lista = disciplinasPorTurma[turmaSelecionada] || [];
 
-  turma.classList.remove("hidden");
-};
-
-turma.onchange = () => {
-  disciplinasDiv.innerHTML = "";
-  dados[ano.value][modalidade.value][turma.value].forEach(d => {
-    disciplinasDiv.innerHTML += `
-      <div class="disciplina" onclick="abrirDisciplina('${d}')">${d}</div>
-    `;
-  });
-};
-
-function abrirDisciplina(nome) {
-  let html = `<h3>${nome}</h3>`;
-
-  const unidades = [
-    { nome: "Unidade I", inicio: 1, fim: 15 },
-    { nome: "Unidade II", inicio: 16, fim: 30 },
-    { nome: "Unidade III", inicio: 31, fim: 40 }
-  ];
-
-  unidades.forEach(u => {
-    html += `<h4>${u.nome}</h4>`;
-    html += `
-      <table>
-        <tr>
-          <th>Aula</th>
-          <th>Slide</th>
-          <th>Material</th>
-          <th>Atividade</th>
-        </tr>
-    `;
-
-    for (let i = u.inicio; i <= u.fim; i++) {
-      html += `
-        <tr>
-          <td>Aula ${i}</td>
-          <td>📑</td>
-          <td></td>
-          <td></td>
-        </tr>
+    lista.forEach(nome => {
+      const bloco = document.createElement('div');
+      bloco.className = 'disciplina';
+      bloco.innerHTML = `
+        <h2>📘 ${nome}</h2>
+        <table>
+          <tr>
+            <th>Aula</th>
+            <th>Slide</th>
+            <th>Material</th>
+            <th>Atividade</th>
+          </tr>
+          ${gerarTabelaAulas()}
+        </table>
+        <div class="links">
+          <a href="#">📚 Classroom</a>
+          <a href="#">📝 Notas</a>
+        </div>
       `;
-    }
+      disciplinasDiv.appendChild(bloco);
+    });
 
-    html += `</table>`;
+    disciplinasDiv.classList.toggle('hidden', lista.length === 0);
+  }
+
+  ano.addEventListener("change", () => {
+    modalidade.disabled = !ano.value;
+    modalidade.value = "";
+    senhaBox.classList.add("hidden");
+    turmaBox.classList.add("hidden");
+    disciplinasDiv.classList.add("hidden");
   });
 
-  disciplinasDiv.innerHTML = html;
-}
+  modalidade.addEventListener("change", () => {
+    senhaBox.classList.remove("hidden");
+    erroSenha.classList.add("hidden");
+    senhaInput.value = "";
+    turmaBox.classList.add("hidden");
+    disciplinasDiv.classList.add("hidden");
+  });
+
+  btnSenha.addEventListener("click", () => {
+    const key = modalidade.value + ano.value;
+    if (senhaInput.value === passwords[key]) {
+      senhaBox.classList.add("hidden");
+      gerarTurmas(modalidade.value);
+      turmaBox.classList.remove("hidden");
+    } else {
+      erroSenha.classList.remove("hidden");
+    }
+  });
+
+  turma.addEventListener("change", () => {
+    if (turma.value) {
+      mostrarDisciplinas(turma.value);
+    } else {
+      disciplinasDiv.classList.add('hidden');
+    }
+  });
 </script>
 
 </body>
