@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Disciplinas</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f5f6fa;
+  padding: 20px;
+}
+
+select, input {
+  padding: 8px;
+  margin: 8px 0;
+  width: 100%;
+  max-width: 400px;
+}
+
+.hidden {
+  display: none;
+}
+
+.disciplina {
+  background: #ffffff;
+  padding: 10px;
+  margin: 8px 0;
+  border-radius: 6px;
+  cursor: pointer;
+  border-left: 5px solid #2c7be5;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 25px;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 6px;
+  text-align: center;
+}
+
+th {
+  background: #2c7be5;
+  color: white;
+}
+
+h3, h4 {
+  margin-top: 25px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>Disciplinas</h2>
+
+<!-- Ano -->
+<select id="ano">
+  <option value="">Selecione o ano</option>
+  <option value="2026">2026</option>
+</select>
+
+<!-- Modalidade -->
+<select id="modalidade" class="hidden">
+  <option value="">Selecione a modalidade</option>
+  <option value="integral">Integral</option>
+  <option value="integrado">Técnico Integrado</option>
+  <option value="proeja">PROEJA</option>
+  <option value="subsequente">Subsequente</option>
+</select>
+
+<!-- Senha -->
+<input type="password" id="senha" class="hidden" placeholder="Senha da modalidade">
+
+<!-- Turma -->
+<select id="turma" class="hidden"></select>
+
+<!-- Disciplinas -->
+<div id="disciplinas"></div>
+
+<script>
+const dados = {
+  "2026": {
+    "integral": {
+      "1A": ["Português", "Matemática", "Informática", "História", "Geografia"],
+      "1B": ["Português", "Matemática", "Informática", "Ciências", "Artes"],
+      "1C": ["Português", "Matemática", "Informática", "Física", "Química"]
+    },
+    "integrado": {
+      "1 TI": ["Lógica", "Português", "Matemática", "Informática", "Redes"],
+      "2 TI": ["POO", "Banco de Dados", "Web", "Português", "Matemática"],
+      "3 TI": ["Redes", "Projeto", "Segurança", "Web", "Empreendedorismo"]
+    },
+    "proeja": {
+      "Módulo I": ["Matemática", "Português", "Informática", "Cidadania", "Trabalho"],
+      "Módulo II": ["Informática", "Redes", "Português", "Matemática", "Projeto"],
+      "Módulo III": ["Banco de Dados", "Web", "Informática", "Projeto", "Ética"],
+      "Módulo IV": ["Projeto", "Redes", "Web", "Banco de Dados", "Gestão"],
+      "Módulo V": ["Projeto Final", "Empreendedorismo", "Ética", "Gestão", "Tecnologia"]
+    },
+    "subsequente": {
+      "Módulo I": ["Algoritmos", "Lógica", "Informática", "Português", "Matemática"],
+      "Módulo II": ["POO", "Banco de Dados", "Web", "Redes", "Projeto"],
+      "Módulo III": ["Projeto Final", "Segurança", "Web Avançado", "Gestão", "Ética"]
+    }
+  }
+};
+
+const ano = document.getElementById("ano");
+const modalidade = document.getElementById("modalidade");
+const senha = document.getElementById("senha");
+const turma = document.getElementById("turma");
+const disciplinasDiv = document.getElementById("disciplinas");
+
+ano.onchange = () => {
+  modalidade.classList.remove("hidden");
+};
+
+modalidade.onchange = () => {
+  senha.classList.remove("hidden");
+};
+
+senha.onchange = () => {
+  const correta = modalidade.value + ano.value;
+  if (senha.value !== correta) {
+    alert("Senha incorreta");
+    senha.value = "";
+    return;
+  }
+
+  turma.innerHTML = "<option value=''>Selecione a turma</option>";
+  Object.keys(dados[ano.value][modalidade.value]).forEach(t => {
+    turma.innerHTML += `<option>${t}</option>`;
+  });
+
+  turma.classList.remove("hidden");
+};
+
+turma.onchange = () => {
+  disciplinasDiv.innerHTML = "";
+  dados[ano.value][modalidade.value][turma.value].forEach(d => {
+    disciplinasDiv.innerHTML += `
+      <div class="disciplina" onclick="abrirDisciplina('${d}')">${d}</div>
+    `;
+  });
+};
+
+function abrirDisciplina(nome) {
+  let html = `<h3>${nome}</h3>`;
+
+  const unidades = [
+    { nome: "Unidade I", inicio: 1, fim: 15 },
+    { nome: "Unidade II", inicio: 16, fim: 30 },
+    { nome: "Unidade III", inicio: 31, fim: 40 }
+  ];
+
+  unidades.forEach(u => {
+    html += `<h4>${u.nome}</h4>`;
+    html += `
+      <table>
+        <tr>
+          <th>Aula</th>
+          <th>Slide</th>
+          <th>Material</th>
+          <th>Atividade</th>
+        </tr>
+    `;
+
+    for (let i = u.inicio; i <= u.fim; i++) {
+      html += `
+        <tr>
+          <td>Aula ${i}</td>
+          <td>📑</td>
+          <td></td>
+          <td></td>
+        </tr>
+      `;
+    }
+
+    html += `</table>`;
+  });
+
+  disciplinasDiv.innerHTML = html;
+}
+</script>
+
+</body>
+</html>
