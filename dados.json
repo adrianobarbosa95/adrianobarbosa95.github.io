@@ -1,292 +1,80 @@
 {
-  "metadata": {
-    "gerado_por": "assistant",
-    "autor": "Adriano Barbosa",
-    "ano": 2026,
-    "observacao": "Arquivo atualizado com a distribuição correta das turmas e disciplinas conforme instruções do usuário. Preencha weekly_hours quando souber 2h/4h."
-  },
   "anos": {
     "2026": {
       "modalidades": {
-        "Integrado": {
-          "nome": "Integrado",
-          "descricao": "Ensino integrado (manhã e tarde)",
+        "integrado": {
+          "nome": "Integrado (Manhã / Tarde)",
+          "senha": "",
           "turmas": {
-            "1º T.I. A": {
+            "1TIA": {
               "nome": "1º T.I. A",
-              "turno": "Manhã/Tarde",
-              "disciplinas": [
-                { "nome": "Algoritmos e Linguagens de Programação 1", "weekly_hours": null },
-                { "nome": "Fundamentos de Arquitetura de Computadores", "weekly_hours": null },
-                { "nome": "Mídias Digitais", "weekly_hours": null }
-              ]
+              "disciplinas": {
+                "d1": { "nome": "Algoritmos e Linguagens de Programação 1" },
+                "d2": { "nome": "Fundamentos de Arquitetura de Computadores" },
+                "d3": { "nome": "Mídias Digitais" }
+              }
             },
-            "1º T.I. B": {
+            "1TIB": {
               "nome": "1º T.I. B",
-              "turno": "Manhã/Tarde",
-              "disciplinas": [
-                { "nome": "Algoritmos e Linguagens de Programação 1", "weekly_hours": null },
-                { "nome": "Fundamentos de Arquitetura de Computadores", "weekly_hours": null },
-                { "nome": "Mídias Digitais", "weekly_hours": null }
-              ]
+              "disciplinas": {
+                "d1": { "nome": "Algoritmos e Linguagens de Programação 1" },
+                "d2": { "nome": "Fundamentos de Arquitetura de Computadores" },
+                "d3": { "nome": "Mídias Digitais" }
+              }
             },
-            "2º T.I.": {
+            "2TI": {
               "nome": "2º T.I.",
-              "turno": "Manhã/Tarde",
-              "disciplinas": [
-                { "nome": "Algoritmos e Linguagens de Programação 2", "weekly_hours": null }
-              ]
+              "disciplinas": {
+                "d1": { "nome": "Algoritmos e Linguagens de Programação 2" }
+              }
             },
-            "3º T.I.": {
+            "3TI": {
               "nome": "3º T.I.",
-              "turno": "Manhã/Tarde",
-              "disciplinas": [
-                { "nome": "Internet e Programação Web", "weekly_hours": null }
-              ]
+              "disciplinas": {
+                "d1": { "nome": "Internet e Programação Web" }
+              }
             }
           }
         },
-        "Subsequente": {
-          "nome": "Subsequente",
-          "descricao": "Cursos subsequentes (noturno)",
+
+        "subsequente": {
+          "nome": "Subsequente (Noturno)",
+          "senha": "",
           "turmas": {
-            "1º TI SUB": {
+            "1TISUB": {
               "nome": "1º TI SUB",
-              "turno": "Noturno",
-              "disciplinas": [
-                { "nome": "Algoritmos e Linguagens de Programação 1", "weekly_hours": null },
-                { "nome": "Informática Aplicada", "weekly_hours": null }
-              ]
+              "disciplinas": {
+                "d1": { "nome": "Algoritmos e Linguagens de Programação 1" },
+                "d2": { "nome": "Informática Aplicada" }
+              }
             },
-            "2º TI SUB": {
+            "2TISUB": {
               "nome": "2º TI SUB",
-              "turno": "Noturno",
-              "disciplinas": [
-                { "nome": "Algoritmos e Linguagens de Programação 2", "weekly_hours": null }
-              ]
+              "disciplinas": {
+                "d1": { "nome": "Algoritmos e Linguagens de Programação 2" }
+              }
             },
-            "1º S. TRAB": {
-              "nome": "1º S. TRAB",
-              "turno": "Noturno",
-              "disciplinas": [
-                { "nome": "Informática Aplicada", "weekly_hours": null }
-              ]
+            "1STRAB": {
+              "nome": "1º Segurança do Trabalho",
+              "disciplinas": {
+                "d1": { "nome": "Informática Aplicada" }
+              }
             }
           }
         },
-        "Proeja": {
-          "nome": "Proeja",
-          "descricao": "Ensino Proeja (noturno)",
+
+        "proeja": {
+          "nome": "PROEJA (Noturno)",
+          "senha": "",
           "turmas": {
-            "5º TI PROEJA": {
-              "nome": "5º TI PROEJA",
-              "turno": "Noturno",
-              "disciplinas": [
-                { "nome": "Internet e Programação Web", "weekly_hours": null }
-              ]
+            "5TIPROEJA": {
+              "nome": "5º Módulo TI",
+              "disciplinas": {
+                "d1": { "nome": "Internet e Programação Web" }
+              }
             }
           }
         }
-      },
-      "calendario": {
-        "I Unidade": [
-          {"data":"2026-02-09","descricao":""},
-          {"data":"2026-02-10","descricao":""},
-          {"data":"2026-02-11","descricao":""},
-          {"data":"2026-02-19","descricao":""},
-          {"data":"2026-02-24","descricao":""},
-          {"data":"2026-02-25","descricao":""},
-          {"data":"2026-02-26","descricao":"avaliação diagnostica"},
-          {"data":"2026-02-27","descricao":"avaliação diagnostica"},
-          {"data":"2026-03-02","descricao":""},
-          {"data":"2026-03-03","descricao":""},
-          {"data":"2026-03-04","descricao":""},
-          {"data":"2026-03-05","descricao":""},
-          {"data":"2026-03-06","descricao":""},
-          {"data":"2026-03-09","descricao":""},
-          {"data":"2026-03-10","descricao":""},
-          {"data":"2026-03-11","descricao":""},
-          {"data":"2026-03-12","descricao":""},
-          {"data":"2026-03-13","descricao":""},
-          {"data":"2026-03-16","descricao":""},
-          {"data":"2026-03-17","descricao":""},
-          {"data":"2026-03-18","descricao":""},
-          {"data":"2026-03-19","descricao":""},
-          {"data":"2026-03-20","descricao":""},
-          {"data":"2026-03-23","descricao":""},
-          {"data":"2026-03-24","descricao":""},
-          {"data":"2026-03-25","descricao":""},
-          {"data":"2026-03-26","descricao":""},
-          {"data":"2026-03-27","descricao":""},
-          {"data":"2026-03-30","descricao":""},
-          {"data":"2026-03-31","descricao":""},
-          {"data":"2026-04-01","descricao":""},
-          {"data":"2026-04-02","descricao":""},
-          {"data":"2026-04-03","descricao":""},
-          {"data":"2026-04-06","descricao":""},
-          {"data":"2026-04-07","descricao":""},
-          {"data":"2026-04-08","descricao":""},
-          {"data":"2026-04-09","descricao":""},
-          {"data":"2026-04-10","descricao":""},
-          {"data":"2026-04-13","descricao":""},
-          {"data":"2026-04-14","descricao":""},
-          {"data":"2026-04-15","descricao":""},
-          {"data":"2026-04-16","descricao":""},
-          {"data":"2026-04-17","descricao":""},
-          {"data":"2026-04-20","descricao":""},
-          {"data":"2026-04-21","descricao":""},
-          {"data":"2026-04-22","descricao":""},
-          {"data":"2026-04-23","descricao":""},
-          {"data":"2026-04-24","descricao":""},
-          {"data":"2026-04-27","descricao":""},
-          {"data":"2026-04-28","descricao":""},
-          {"data":"2026-04-29","descricao":""},
-          {"data":"2026-04-30","descricao":""},
-          {"data":"2026-05-04","descricao":""},
-          {"data":"2026-05-05","descricao":""},
-          {"data":"2026-05-06","descricao":""},
-          {"data":"2026-05-07","descricao":""},
-          {"data":"2026-05-08","descricao":""},
-          {"data":"2026-05-11","descricao":""},
-          {"data":"2026-05-12","descricao":""},
-          {"data":"2026-05-13","descricao":""},
-          {"data":"2026-05-14","descricao":""},
-          {"data":"2026-05-15","descricao":""}
-        ],
-        "II Unidade": [
-          {"data":"2026-05-18","descricao":""},
-          {"data":"2026-05-19","descricao":""},
-          {"data":"2026-05-20","descricao":""},
-          {"data":"2026-05-21","descricao":""},
-          {"data":"2026-05-22","descricao":""},
-          {"data":"2026-05-25","descricao":""},
-          {"data":"2026-05-26","descricao":""},
-          {"data":"2026-05-27","descricao":""},
-          {"data":"2026-05-28","descricao":""},
-          {"data":"2026-05-29","descricao":""},
-          {"data":"2026-06-01","descricao":""},
-          {"data":"2026-06-02","descricao":""},
-          {"data":"2026-06-03","descricao":""},
-          {"data":"2026-06-04","descricao":""},
-          {"data":"2026-06-05","descricao":""},
-          {"data":"2026-06-08","descricao":""},
-          {"data":"2026-06-09","descricao":""},
-          {"data":"2026-06-10","descricao":""},
-          {"data":"2026-06-11","descricao":""},
-          {"data":"2026-06-12","descricao":""},
-          {"data":"2026-06-15","descricao":""},
-          {"data":"2026-06-16","descricao":""},
-          {"data":"2026-06-17","descricao":""},
-          {"data":"2026-06-18","descricao":""},
-          {"data":"2026-06-19","descricao":""},
-          {"data":"2026-06-22","descricao":""},
-          {"data":"2026-06-23","descricao":""},
-          {"data":"2026-06-24","descricao":""},
-          {"data":"2026-06-25","descricao":""},
-          {"data":"2026-06-26","descricao":""},
-          {"data":"2026-06-29","descricao":""},
-          {"data":"2026-06-30","descricao":""},
-          {"data":"2026-07-01","descricao":""},
-          {"data":"2026-07-02","descricao":""},
-          {"data":"2026-07-03","descricao":""},
-          {"data":"2026-07-06","descricao":""},
-          {"data":"2026-07-07","descricao":""},
-          {"data":"2026-07-08","descricao":""},
-          {"data":"2026-07-09","descricao":""},
-          {"data":"2026-07-10","descricao":""},
-          {"data":"2026-07-13","descricao":""},
-          {"data":"2026-07-14","descricao":""},
-          {"data":"2026-07-15","descricao":""},
-          {"data":"2026-07-16","descricao":""},
-          {"data":"2026-07-17","descricao":""},
-          {"data":"2026-07-20","descricao":""},
-          {"data":"2026-07-21","descricao":""},
-          {"data":"2026-07-22","descricao":""},
-          {"data":"2026-07-23","descricao":""},
-          {"data":"2026-07-24","descricao":""},
-          {"data":"2026-07-27","descricao":""},
-          {"data":"2026-07-28","descricao":""},
-          {"data":"2026-07-29","descricao":""}
-        ],
-        "III Unidade": [
-          {"data":"2026-08-31","descricao":""},
-          {"data":"2026-09-01","descricao":""},
-          {"data":"2026-09-02","descricao":""},
-          {"data":"2026-09-03","descricao":""},
-          {"data":"2026-09-04","descricao":""},
-          {"data":"2026-09-07","descricao":""},
-          {"data":"2026-09-08","descricao":""},
-          {"data":"2026-09-09","descricao":""},
-          {"data":"2026-09-10","descricao":""},
-          {"data":"2026-09-11","descricao":""},
-          {"data":"2026-09-14","descricao":""},
-          {"data":"2026-09-15","descricao":""},
-          {"data":"2026-09-16","descricao":""},
-          {"data":"2026-09-17","descricao":""},
-          {"data":"2026-09-18","descricao":""},
-          {"data":"2026-09-21","descricao":""},
-          {"data":"2026-09-22","descricao":""},
-          {"data":"2026-09-23","descricao":""},
-          {"data":"2026-09-24","descricao":""},
-          {"data":"2026-09-25","descricao":""},
-          {"data":"2026-09-28","descricao":""},
-          {"data":"2026-09-29","descricao":""},
-          {"data":"2026-09-30","descricao":""},
-          {"data":"2026-10-01","descricao":""},
-          {"data":"2026-10-02","descricao":""},
-          {"data":"2026-10-05","descricao":""},
-          {"data":"2026-10-06","descricao":""},
-          {"data":"2026-10-07","descricao":""},
-          {"data":"2026-10-08","descricao":""},
-          {"data":"2026-10-09","descricao":""},
-          {"data":"2026-10-12","descricao":""},
-          {"data":"2026-10-13","descricao":""},
-          {"data":"2026-10-14","descricao":""},
-          {"data":"2026-10-15","descricao":""},
-          {"data":"2026-10-16","descricao":""},
-          {"data":"2026-10-19","descricao":""},
-          {"data":"2026-10-20","descricao":""},
-          {"data":"2026-10-21","descricao":""},
-          {"data":"2026-10-22","descricao":""},
-          {"data":"2026-10-23","descricao":""},
-          {"data":"2026-10-26","descricao":""},
-          {"data":"2026-10-27","descricao":""},
-          {"data":"2026-10-28","descricao":""},
-          {"data":"2026-10-29","descricao":""},
-          {"data":"2026-10-30","descricao":""},
-          {"data":"2026-11-02","descricao":""},
-          {"data":"2026-11-03","descricao":""},
-          {"data":"2026-11-04","descricao":""},
-          {"data":"2026-11-05","descricao":""},
-          {"data":"2026-11-06","descricao":""},
-          {"data":"2026-11-09","descricao":""},
-          {"data":"2026-11-10","descricao":""},
-          {"data":"2026-11-11","descricao":""},
-          {"data":"2026-11-12","descricao":""},
-          {"data":"2026-11-13","descricao":""},
-          {"data":"2026-11-16","descricao":""},
-          {"data":"2026-11-17","descricao":""},
-          {"data":"2026-11-18","descricao":""},
-          {"data":"2026-11-19","descricao":""},
-          {"data":"2026-11-20","descricao":""},
-          {"data":"2026-11-23","descricao":""},
-          {"data":"2026-11-24","descricao":""},
-          {"data":"2026-11-25","descricao":""},
-          {"data":"2026-11-26","descricao":""},
-          {"data":"2026-11-27","descricao":""},
-          {"data":"2026-11-30","descricao":""},
-          {"data":"2026-12-01","descricao":""},
-          {"data":"2026-12-02","descricao":""},
-          {"data":"2026-12-03","descricao":""},
-          {"data":"2026-12-04","descricao":""},
-          {"data":"2026-12-07","descricao":""},
-          {"data":"2026-12-08","descricao":""},
-          {"data":"2026-12-09","descricao":""},
-          {"data":"2026-12-10","descricao":""},
-          {"data":"2026-12-11","descricao":""},
-          {"data":"2026-12-14","descricao":""},
-          {"data":"2026-12-15","descricao":""}
-        ]
       }
     }
   }
