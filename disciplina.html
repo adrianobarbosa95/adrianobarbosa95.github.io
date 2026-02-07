@@ -26,9 +26,9 @@
       padding: 40px 20px;
     }
 
-    h2, h3 { margin-top: 30px; }
+    h2 { margin-top: 30px; }
 
-    select, input, button {
+    select, button {
       padding: 10px;
       font-size: 1rem;
       margin-top: 10px;
@@ -47,14 +47,13 @@
     button:hover { background: #1d4ed8; }
 
     .hidden { display: none; }
-    .error { color: #dc2626; margin-top: 10px; }
 
     .disciplina {
       background: #fff;
       padding: 20px;
       border-radius: 14px;
       box-shadow: 0 10px 20px rgba(0,0,0,0.08);
-      margin-top: 40px;
+      margin-top: 30px;
     }
 
     table {
@@ -84,190 +83,96 @@
 
 <header>
   <h1>📚 Disciplinas</h1>
-  <p>Ambiente genérico de materiais didáticos</p>
+  <p>Organização de materiais didáticos</p>
 </header>
 
 <main>
 
-  <h2>📅 Ano</h2>
-  <select id="ano"></select>
-
   <h2>🎓 Modalidade</h2>
-  <select id="modalidade" disabled></select>
+  <select id="modalidade"></select>
 
-  <div id="senhaBox" class="hidden">
-    <h2>🔐 Senha</h2>
-    <input type="password" id="senhaInput" placeholder="Senha da modalidade">
-    <button id="btnSenha">Acessar</button>
-    <div id="erroSenha" class="error hidden">Senha incorreta</div>
-  </div>
+  <h2>👥 Turma</h2>
+  <select id="turma" disabled></select>
 
-  <div id="turmaBox" class="hidden">
-    <h2>👥 Turma</h2>
-    <select id="turma"></select>
-  </div>
-
-  <div id="disciplinas" class="hidden"></div>
-
-  <div id="voltarBox" class="hidden" style="margin-top:20px;">
-    <button id="btnVoltar">⬅ Voltar</button>
-  </div>
+  <div id="conteudo" class="hidden"></div>
 
 </main>
 
 <script>
-/* ======================================================
-   ESTRUTURA TOTALMENTE GENÉRICA (IDs + Nomes)
-====================================================== */
+let sistema = {};
 
-const sistema = {
-  anos: {
-    "2026": {
-      modalidades: {
-        "m1": {
-          nome: "Modalidade 1",
-          senha: "123",
-          turmas: {
-            "t1": {
-              nome: "Turma 1",
-              disciplinas: {
-                "d1": { nome: "Disciplina 1" },
-                "d2": { nome: "Disciplina 2" }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-};
-
-/* ======================================================
-   ELEMENTOS
-====================================================== */
-const anoSel = document.getElementById("ano");
 const modalidadeSel = document.getElementById("modalidade");
 const turmaSel = document.getElementById("turma");
-const disciplinasDiv = document.getElementById("disciplinas");
+const conteudo = document.getElementById("conteudo");
 
-const senhaBox = document.getElementById("senhaBox");
-const senhaInput = document.getElementById("senhaInput");
-const erroSenha = document.getElementById("erroSenha");
+fetch("data/dados.json")
+  .then(res => res.json())
+  .then(data => {
+    sistema = data;
+    carregarModalidades();
+  });
 
-const turmaBox = document.getElementById("turmaBox");
-const voltarBox = document.getElementById("voltarBox");
-
-/* ======================================================
-   HELPERS
-====================================================== */
-function option(value, text) {
+function option(v, t) {
   const o = document.createElement("option");
-  o.value = value;
-  o.textContent = text;
+  o.value = v;
+  o.textContent = t;
   return o;
 }
 
-function linkOuTraco(url, texto) {
-  return url ? `<a href="${url}" target="_blank">${texto}</a>` : "—";
+function carregarModalidades() {
+  modalidadeSel.innerHTML = '<option value="">Selecione</option>';
+  Object.entries(sistema.modalidades).forEach(([id, m]) => {
+    modalidadeSel.appendChild(option(id, m.nome));
+  });
 }
 
-/* ======================================================
-   POPULAR ANOS
-====================================================== */
-anoSel.innerHTML = '<option value="">Selecione</option>';
-Object.keys(sistema.anos).forEach(a =>
-  anoSel.appendChild(option(a, a))
-);
-
-/* ======================================================
-   EVENTOS
-====================================================== */
-anoSel.onchange = () => {
-  modalidadeSel.innerHTML = '<option value="">Selecione</option>';
-  modalidadeSel.disabled = !anoSel.value;
-
-  senhaBox.classList.add("hidden");
-  turmaBox.classList.add("hidden");
-  disciplinasDiv.classList.add("hidden");
-
-  if (!anoSel.value) return;
-
-  const modalidades = sistema.anos[anoSel.value].modalidades;
-  Object.entries(modalidades).forEach(([id, m]) =>
-    modalidadeSel.appendChild(option(id, m.nome))
-  );
-};
-
 modalidadeSel.onchange = () => {
-  senhaBox.classList.remove("hidden");
-  erroSenha.classList.add("hidden");
-  senhaInput.value = "";
-};
+  turmaSel.innerHTML = '<option value="">Selecione</option>';
+  turmaSel.disabled = !modalidadeSel.value;
+  conteudo.classList.add("hidden");
+  conteudo.innerHTML = "";
 
-document.getElementById("btnSenha").onclick = () => {
-  const mod = sistema.anos[anoSel.value].modalidades[modalidadeSel.value];
-  if (senhaInput.value === mod.senha) {
-    senhaBox.classList.add("hidden");
-    turmaBox.classList.remove("hidden");
+  if (!modalidadeSel.value) return;
 
-    turmaSel.innerHTML = '<option value="">Selecione</option>';
-    Object.entries(mod.turmas).forEach(([id, t]) =>
-      turmaSel.appendChild(option(id, t.nome))
-    );
-  } else {
-    erroSenha.classList.remove("hidden");
-  }
+  const turmas = sistema.modalidades[modalidadeSel.value].turmas;
+  Object.entries(turmas).forEach(([id, t]) => {
+    turmaSel.appendChild(option(id, t.nome));
+  });
 };
 
 turmaSel.onchange = () => {
-  disciplinasDiv.innerHTML = "";
-  disciplinasDiv.classList.add("hidden");
+  conteudo.innerHTML = "";
+  conteudo.classList.add("hidden");
 
   if (!turmaSel.value) return;
 
   const turma =
-    sistema.anos[anoSel.value]
-      .modalidades[modalidadeSel.value]
-      .turmas[turmaSel.value];
+    sistema.modalidades[modalidadeSel.value].turmas[turmaSel.value];
 
-  Object.entries(turma.disciplinas).forEach(([id, d]) => {
+  turma.disciplinas.forEach(d => {
     const bloco = document.createElement("div");
     bloco.className = "disciplina";
-
     bloco.innerHTML = `
-      <h2>📘 ${d.nome}</h2>
-      ${gerarTabela()}
+      <h2>📘 ${d}</h2>
+      ${tabelaAulas()}
     `;
-    disciplinasDiv.appendChild(bloco);
+    conteudo.appendChild(bloco);
   });
 
-  disciplinasDiv.classList.remove("hidden");
-  voltarBox.classList.remove("hidden");
+  conteudo.classList.remove("hidden");
 };
 
-document.getElementById("btnVoltar").onclick = () => {
-  disciplinasDiv.classList.add("hidden");
-  voltarBox.classList.add("hidden");
-  turmaSel.value = "";
-};
-
-/* ======================================================
-   TABELA GENÉRICA
-====================================================== */
-function gerarTabela() {
-  let html = "<table><tr><th>Aula</th><th>Slide</th><th>Material</th><th>Atividade</th></tr>";
-
+function tabelaAulas() {
+  let html = "<table><tr><th>Aula</th><th>Slides</th><th>Material</th><th>Atividade</th></tr>";
   for (let i = 1; i <= 10; i++) {
     html += `
       <tr>
         <td>Aula ${i}</td>
-        <td>${linkOuTraco(null, "Slides")}</td>
-        <td>${linkOuTraco(null, "Material")}</td>
-        <td>${linkOuTraco(null, "Atividade")}</td>
-      </tr>
-    `;
+        <td>—</td>
+        <td>—</td>
+        <td>—</td>
+      </tr>`;
   }
-
   html += "</table>";
   return html;
 }
