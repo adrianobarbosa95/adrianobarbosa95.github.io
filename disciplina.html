@@ -156,7 +156,7 @@ function linkOuTraco(url, texto) {
 /* ======================================================
    CARREGA JSON
 ====================================================== */
-fetch("data/dados.json")
+fetch("dados.json")
   .then(res => {
     if (!res.ok) throw new Error("Não foi possível carregar data/dados.json");
     return res.json();
