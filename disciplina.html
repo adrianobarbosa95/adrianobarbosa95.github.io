@@ -23,17 +23,18 @@
     main {
       max-width: 1200px;
       margin: auto;
-      padding: 40px 20px;
+      padding: 24px 20px 80px 20px;
     }
 
-    h2, h3 { margin-top: 30px; }
+    h2, h3 { margin-top: 18px; }
 
     select, input, button {
       padding: 10px;
       font-size: 1rem;
-      margin-top: 10px;
+      margin-top: 8px;
       max-width: 360px;
       width: 100%;
+      box-sizing: border-box;
     }
 
     button {
@@ -49,18 +50,26 @@
     .hidden { display: none; }
     .error { color: #dc2626; margin-top: 10px; }
 
+    .card {
+      background: #fff;
+      padding: 16px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+      margin-top: 16px;
+    }
+
     .disciplina {
       background: #fff;
       padding: 20px;
       border-radius: 14px;
       box-shadow: 0 10px 20px rgba(0,0,0,0.08);
-      margin-top: 40px;
+      margin-top: 20px;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 15px;
+      margin-top: 12px;
     }
 
     th, td {
@@ -72,230 +81,496 @@
 
     th { background: #f9fafb; }
 
-    a {
-      color: #2563eb;
-      font-weight: 600;
-      text-decoration: none;
-    }
+    .row { display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
+    .col { flex:1; min-width:200px; }
+
+    .calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:12px}
+    .date-cell{padding:8px;border-radius:8px;border:1px solid #e6e7ea;background:#fff;min-height:56px;cursor:pointer}
+    .date-cell.assigned{background:linear-gradient(90deg,#ecfdf5,#f0fdf4);border:1px solid #34d399}
+    .date-cell small{display:block;color:#6b7280;margin-top:6px;font-size:.8rem}
+
+    .small-muted { color:#6b7280; font-size:0.9rem }
+    input.link-input { width:100%; padding:6px; box-sizing:border-box; border-radius:6px; border:1px solid #e5e7eb }
+
+    .controls { display:flex; gap:8px; flex-wrap:wrap; }
+    .right { margin-left:auto; }
+    pre { background:#0f172a; color:#fff; padding:12px; border-radius:8px; overflow:auto; white-space:pre-wrap; word-break:break-word; }
   </style>
 </head>
 
 <body>
 
 <header>
-  <h1>📚 Disciplinas</h1>
-  <p>Ambiente genérico de materiais didáticos</p>
+  <h1>📚 Disciplinas • Painel Avançado</h1>
+  <div style="font-size:.95rem;opacity:.9">Configure aulas por unidade, atribua datas e adicione links (Slides / Material / Atividade)</div>
 </header>
 
 <main>
 
-  <h2>📅 Ano</h2>
-  <select id="ano"></select>
+  <div class="card">
+    <div class="row">
+      <div class="col">
+        <label><strong>Ano</strong></label><br>
+        <select id="ano"></select>
+      </div>
 
-  <h2>🎓 Modalidade</h2>
-  <select id="modalidade" disabled></select>
+      <div class="col">
+        <label><strong>Modalidade</strong></label><br>
+        <select id="modalidade" disabled></select>
+      </div>
 
-  <div id="senhaBox" class="hidden">
-    <h2>🔐 Senha</h2>
-    <input type="password" id="senhaInput" placeholder="Senha da modalidade">
-    <button id="btnSenha">Acessar</button>
-    <div id="erroSenha" class="error hidden">Senha incorreta</div>
+      <div class="col" id="turmaWrap" style="display:none">
+        <label><strong>Turma</strong></label><br>
+        <select id="turma"></select>
+      </div>
+
+      <div style="min-width:220px">
+        <label><strong>Export / Import</strong></label><br>
+        <div class="controls">
+          <button id="exportBtn">Exportar programação (.json)</button>
+          <button id="downloadBtn">Baixar (.json)</button>
+          <input id="importFile" type="file" accept=".json" style="display:none">
+          <button id="importBtn">Importar (.json)</button>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <div id="turmaBox" class="hidden">
-    <h2>👥 Turma</h2>
-    <select id="turma"></select>
+  <div id="discContainer" class="card hidden">
+    <h3>Disciplinas</h3>
+    <div id="discList" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"></div>
   </div>
 
-  <div id="disciplinas" class="hidden"></div>
+  <div id="configPanel" class="card hidden">
+    <div class="row">
+      <div>
+        <strong>Disciplina selecionada:</strong>
+        <div id="selectedDisc" class="small-muted">—</div>
+      </div>
 
-  <div id="voltarBox" class="hidden" style="margin-top:20px;">
-    <button id="btnVoltar">⬅ Voltar</button>
+      <div class="right">
+        <button id="clearAssignments">Limpar marcações desta disciplina</button>
+      </div>
+    </div>
+
+    <div style="margin-top:12px" id="unitsPanel">
+      <!-- unidades serão injetadas aqui -->
+    </div>
+
+    <div id="calendarPanel" style="margin-top:14px">
+      <h4 style="margin:0 0 6px 0">Calendário da unidade (clique para atribuir/desatribuir)</h4>
+      <div style="display:flex;gap:10px;align-items:center">
+        <label><strong>Unidade</strong>
+          <select id="unitSelect"></select>
+        </label>
+
+        <label><strong>Meta de aulas nesta unidade</strong></label>
+        <input id="targetCount" type="number" min="0" placeholder="Ex.: 20" style="width:120px">
+
+        <button id="autoDist">Auto distribuir (preencher primeiras N datas)</button>
+        <div class="small-muted" style="margin-left:auto">Clique em uma data marcada para desmarcar.</div>
+      </div>
+
+      <div id="calendar" class="calendar-grid"></div>
+
+      <div style="margin-top:12px">
+        <h4 style="margin:0">Aulas atribuídas (edite links)</h4>
+        <div id="assignedTableWrap"></div>
+      </div>
+    </div>
+
+    <div style="margin-top:12px">
+      <h4>Programação atual (JSON)</h4>
+      <pre id="jsonOut">{}</pre>
+    </div>
   </div>
 
 </main>
 
 <script>
-/* ======================================================
-   CARREGA DADOS EXTERNOS (data/dados.json)
-   Estrutura esperada: anos -> { "2026": { modalidades: { ... } } }
-   Cada modalidade deve ter: nome, senha (pode ser ""), turmas -> { id: { nome, disciplinas: { id:{nome} } } }
-====================================================== */
+/* disciplina.html avançado
+ + carrega data/dados.json
+ + permite configurar aulas por unidade, distribuir/atribuir datas, editar links
+ + export/import da estrutura "programacao" que guarda: programa[ano][modalidade][turma][disciplina][unidade] = [{date, slide, material, activity}, ...]
+*/
 
-let sistema = {}; // será preenchido via fetch
+let dados = null;
+let programacao = {}; // carregado do localStorage / import / criado
+let selected = { ano: null, modalidade: null, turma: null, disciplina: null, unidade: null };
 
-/* ======================================================
-   ELEMENTOS
-====================================================== */
-const anoSel = document.getElementById("ano");
-const modalidadeSel = document.getElementById("modalidade");
-const turmaSel = document.getElementById("turma");
-const disciplinasDiv = document.getElementById("disciplinas");
+const anoSel = document.getElementById('ano');
+const modSel = document.getElementById('modalidade');
+const turmaSel = document.getElementById('turma');
+const turmaWrap = document.getElementById('turmaWrap');
 
-const senhaBox = document.getElementById("senhaBox");
-const senhaInput = document.getElementById("senhaInput");
-const erroSenha = document.getElementById("erroSenha");
+const discContainer = document.getElementById('discContainer');
+const discList = document.getElementById('discList');
+const configPanel = document.getElementById('configPanel');
+const selectedDiscText = document.getElementById('selectedDisc');
 
-const turmaBox = document.getElementById("turmaBox");
-const voltarBox = document.getElementById("voltarBox");
+const unitsPanel = document.getElementById('unitsPanel');
+const unitSelect = document.getElementById('unitSelect');
+const calendarDiv = document.getElementById('calendar');
+const targetCountInput = document.getElementById('targetCount');
+const assignedTableWrap = document.getElementById('assignedTableWrap');
+const jsonOut = document.getElementById('jsonOut');
 
-/* ======================================================
-   HELPERS
-====================================================== */
-function option(value, text) {
-  const o = document.createElement("option");
-  o.value = value;
-  o.textContent = text;
-  return o;
+const exportBtn = document.getElementById('exportBtn');
+const downloadBtn = document.getElementById('downloadBtn');
+const importBtn = document.getElementById('importBtn');
+const importFile = document.getElementById('importFile');
+const autoDistBtn = document.getElementById('autoDist');
+const clearAssignmentsBtn = document.getElementById('clearAssignments');
+
+fetch('dados.json')
+  .then(r => r.json())
+  .then(j => {
+    dados = j;
+    normalizeData();
+    init();
+  })
+  .catch(e => { alert('Erro ao carregar data/dados.json — verifique o arquivo.'); console.error(e); });
+
+function normalizeData(){
+  // garante estrutura esperada (calendario no nível anos->calendario ou dados.calendario)
+  if (!dados.anos) {
+    // caso o arquivo já esteja no formato antigo (sem "anos"), transformamos
+    dados = { anos: { "2026": dados } };
+  }
+  // init programacao from localStorage if present
+  const saved = localStorage.getItem('programacao_disciplinas_v1');
+  if (saved) {
+    try { programacao = JSON.parse(saved); } catch(e){ programacao = {}; }
+  }
 }
 
-function linkOuTraco(url, texto) {
-  return url ? `<a href="${url}" target="_blank">${texto}</a>` : "—";
-}
-
-/* ======================================================
-   CARREGA JSON
-====================================================== */
-fetch("dados.json")
-  .then(res => {
-    if (!res.ok) throw new Error("Não foi possível carregar data/dados.json");
-    return res.json();
-  })
-  .then(data => {
-    // Para compatibilidade com o padrão anterior, transformamos em estrutura com "anos"
-    sistema = data.anos ? data : { anos: { "2026": data } };
-    popularAnos();
-  })
-  .catch(err => {
-    console.error(err);
-    alert("Erro ao carregar dados (data/dados.json). Verifique o arquivo e o caminho no repositório.");
-  });
-
-/* ======================================================
-   POPULAR ANOS (após carregar JSON)
-====================================================== */
-function popularAnos() {
+function init(){
+  // popular anos
   anoSel.innerHTML = '<option value="">Selecione</option>';
-  Object.keys(sistema.anos).forEach(a => anoSel.appendChild(option(a, a)));
+  Object.keys(dados.anos).forEach(a => anoSel.appendChild(opt(a,a)));
+
+  // handlers
+  anoSel.onchange = onAnoChange;
+  modSel.onchange = onModalidadeChange;
+  turmaSel.onchange = onTurmaChange;
+  unitSelect.onchange = () => {
+    selected.unidade = unitSelect.value;
+    renderCalendar();
+    renderAssignedTable();
+  };
+
+  exportBtn.onclick = () => {
+    const blob = new Blob([JSON.stringify(programacao, null, 2)], {type:'application/json'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'programacao_disciplinas.json';
+    a.click();
+  };
+  downloadBtn.onclick = exportBtn.onclick;
+  importBtn.onclick = () => importFile.click();
+  importFile.onchange = (e) => {
+    const f = e.target.files[0];
+    if(!f) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try {
+        programacao = JSON.parse(ev.target.result);
+        localStorage.setItem('programacao_disciplinas_v1', JSON.stringify(programacao));
+        alert('Programação importada e salva localmente.');
+        renderJSONOut();
+        renderCalendar();
+        renderAssignedTable();
+      } catch(err){ alert('JSON inválido'); }
+    };
+    reader.readAsText(f);
+  };
+
+  autoDistBtn.onclick = () => {
+    if (!selected.disciplina || !selected.unidade) { alert('Selecione disciplina e unidade.'); return; }
+    const target = parseInt(targetCountInput.value);
+    if (!target || target <= 0) { alert('Informe um número de aulas válido em "Meta de aulas".'); return; }
+    autoDistribuir(target);
+  };
+
+  clearAssignmentsBtn.onclick = () => {
+    if (!selected.disciplina) { alert('Selecione disciplina.'); return; }
+    if (!confirm('Limpar todas as marcações desta disciplina (todas as unidades)?')) return;
+    ensureProgramacaoNode();
+    const node = programacao[selected.ano][selected.modalidade][selected.turma];
+    if (node && node[selected.disciplina]) node[selected.disciplina] = {};
+    localStorage.setItem('programacao_disciplinas_v1', JSON.stringify(programacao));
+    renderJSONOut();
+    renderCalendar();
+    renderAssignedTable();
+  };
+
+  renderJSONOut();
 }
 
-/* ======================================================
-   EVENTOS
-====================================================== */
-anoSel.onchange = () => {
-  modalidadeSel.innerHTML = '<option value="">Selecione</option>';
-  modalidadeSel.disabled = !anoSel.value;
+/* ---------- eventos de seleção ---------- */
+function onAnoChange(){
+  selected.ano = anoSel.value;
+  modSel.innerHTML = '<option value="">Selecione</option>';
+  modSel.disabled = !selected.ano;
+  turmaWrap.style.display = 'none';
+  discContainer.classList.add('hidden');
+  configPanel.classList.add('hidden');
+  if (!selected.ano) return;
+  const mods = dados.anos[selected.ano].modalidades;
+  Object.entries(mods).forEach(([k,v]) => modSel.appendChild(opt(k, v.nome)));
+}
 
-  senhaBox.classList.add("hidden");
-  turmaBox.classList.add("hidden");
-  disciplinasDiv.classList.add("hidden");
-
-  if (!anoSel.value) return;
-
-  const modalidades = sistema.anos[anoSel.value].modalidades;
-  Object.entries(modalidades).forEach(([id, m]) =>
-    modalidadeSel.appendChild(option(id, m.nome))
-  );
-};
-
-modalidadeSel.onchange = () => {
-  erroSenha.classList.add("hidden");
-  senhaInput.value = "";
-
-  // Se modalidade selected não tem senha definida ("" ou undefined), avançamos direto
-  const mod = sistema.anos[anoSel.value].modalidades[modalidadeSel.value];
-  if (!mod) return;
-
-  if (!mod.senha) {
-    senhaBox.classList.add("hidden");
-    abrirTurmasDaModalidade(mod);
-  } else {
-    senhaBox.classList.remove("hidden");
-  }
-};
-
-document.getElementById("btnSenha").onclick = () => {
-  const mod = sistema.anos[anoSel.value].modalidades[modalidadeSel.value];
-  if (!mod) return;
-  if (senhaInput.value === (mod.senha || "")) {
-    erroSenha.classList.add("hidden");
-    senhaBox.classList.add("hidden");
-    abrirTurmasDaModalidade(mod);
-  } else {
-    erroSenha.classList.remove("hidden");
-  }
-};
-
-function abrirTurmasDaModalidade(mod) {
-  turmaBox.classList.remove("hidden");
-
+function onModalidadeChange(){
+  selected.modalidade = modSel.value;
   turmaSel.innerHTML = '<option value="">Selecione</option>';
-  Object.entries(mod.turmas).forEach(([id, t]) =>
-    turmaSel.appendChild(option(id, t.nome))
-  );
+  turmaWrap.style.display = 'none';
+  discContainer.classList.add('hidden');
+  configPanel.classList.add('hidden');
+  if (!selected.modalidade) return;
+  const turmas = dados.anos[selected.ano].modalidades[selected.modalidade].turmas;
+  Object.entries(turmas).forEach(([k,t]) => turmaSel.appendChild(opt(k, t.nome)));
+  turmaWrap.style.display = 'block';
 }
 
-turmaSel.onchange = () => {
-  disciplinasDiv.innerHTML = "";
-  disciplinasDiv.classList.add("hidden");
-
-  if (!turmaSel.value) return;
-
-  const turma =
-    sistema.anos[anoSel.value]
-      .modalidades[modalidadeSel.value]
-      .turmas[turmaSel.value];
-
-  // Caso disciplinas venham como array simples (strings), suportamos ambos formatos:
-  let disciplinasObj = turma.disciplinas;
-  // se for array de strings -> converte para objeto temporário
-  if (Array.isArray(disciplinasObj)) {
-    const arr = {};
-    disciplinasObj.forEach((name, idx) => arr["d"+(idx+1)] = { nome: name });
-    disciplinasObj = arr;
+function onTurmaChange(){
+  selected.turma = turmaSel.value;
+  discList.innerHTML = '';
+  discContainer.classList.add('hidden');
+  configPanel.classList.add('hidden');
+  if (!selected.turma) return;
+  const turmaObj = dados.anos[selected.ano].modalidades[selected.modalidade].turmas[selected.turma];
+  const dis = turmaObj.disciplinas || [];
+  // disciplinas podem vir como array de strings ou objeto; padronizamos para array de objetos com nome
+  let arr = [];
+  if (Array.isArray(dis)) {
+    arr = dis.map(s => (typeof s === 'string' ? { nome: s, units: defaultUnitsForModalidade(selected.modalidade) } : s));
+  } else {
+    // objeto com chaves d1,d2...
+    arr = Object.values(dis).map(d => {
+      if (!d.units) d.units = defaultUnitsForModalidade(selected.modalidade);
+      return d;
+    });
   }
 
-  Object.entries(disciplinasObj).forEach(([id, d]) => {
-    const bloco = document.createElement("div");
-    bloco.className = "disciplina";
-
-    bloco.innerHTML = `
-      <h2>📘 ${d.nome}</h2>
-      ${gerarTabela()}
-    `;
-    disciplinasDiv.appendChild(bloco);
+  arr.forEach(d => {
+    const el = document.createElement('div');
+    el.className = 'disc-item card';
+    el.style.padding = '10px';
+    el.style.cursor = 'pointer';
+    el.textContent = d.nome;
+    el.onclick = () => {
+      // selecionar disciplina
+      document.querySelectorAll('.disc-item').forEach(x=>x.style.outline='');
+      el.style.outline = '2px solid #cfe3ff';
+      selectDisciplina(d);
+    };
+    discList.appendChild(el);
   });
 
-  disciplinasDiv.classList.remove("hidden");
-  voltarBox.classList.remove("hidden");
-};
-
-document.getElementById("btnVoltar").onclick = () => {
-  disciplinasDiv.classList.add("hidden");
-  voltarBox.classList.add("hidden");
-  turmaSel.value = "";
-};
-
-/* ======================================================
-   TABELA GENÉRICA
-====================================================== */
-function gerarTabela() {
-  let html = "<table><tr><th>Aula</th><th>Slide</th><th>Material</th><th>Atividade</th></tr>";
-
-  for (let i = 1; i <= 10; i++) {
-    html += `
-      <tr>
-        <td>Aula ${i}</td>
-        <td>${linkOuTraco(null, "Slides")}</td>
-        <td>${linkOuTraco(null, "Material")}</td>
-        <td>${linkOuTraco(null, "Atividade")}</td>
-      </tr>
-    `;
-  }
-
-  html += "</table>";
-  return html;
+  discContainer.classList.remove('hidden');
 }
+
+/* ---------- seleção de disciplina ---------- */
+function selectDisciplina(discObj){
+  selected.disciplina = discObj.nome;
+  selectedDiscText.textContent = selected.disciplina + ' — ' + (dados.anos[selected.ano].modalidades[selected.modalidade].turmas[selected.turma].turno || '');
+  // unidades da disciplina (se já entregue no JSON ou padrão pela modalidade)
+  const units = discObj.units || defaultUnitsForModalidade(selected.modalidade);
+  // render panel units / inputs
+  unitsPanel.innerHTML = '';
+  const heading = document.createElement('div');
+  heading.innerHTML = '<strong>Configurar aulas por unidade</strong><div class="small-muted">Informe quantas aulas serão nessa unidade (0 = nenhuma)</div>';
+  unitsPanel.appendChild(heading);
+
+  const ul = document.createElement('div');
+  ul.style.display = 'flex'; ul.style.gap='12px'; ul.style.marginTop='8px'; ul.style.flexWrap='wrap';
+  Object.keys(units).forEach(uKey => {
+    const wrapper = document.createElement('div');
+    wrapper.style.minWidth='200px';
+    const label = document.createElement('label');
+    label.innerHTML = '<strong>'+uKey+'</strong><br>';
+    const input = document.createElement('input');
+    input.type = 'number';
+    input.min = 0;
+    input.placeholder = 'Aulas (ex: 20)';
+    input.style.marginTop='6px';
+    // try to read existing value from programacao if present (count = length)
+    const existing = getAssignedFor(selected.ano, selected.modalidade, selected.turma, selected.disciplina, uKey);
+    input.value = (existing && existing.length) ? existing.length : (units[uKey] && units[uKey].aulas ? units[uKey].aulas : '');
+    input.onchange = () => {
+      // store desired number into dados structure in-memory (not modifying file)
+      units[uKey] = units[uKey] || {};
+      units[uKey].aulas = input.value ? parseInt(input.value) : null;
+      // set the targetCount input if this unit is currently selected
+      if (unitSelect.value === uKey) targetCountInput.value = input.value;
+    };
+    wrapper.appendChild(label);
+    wrapper.appendChild(input);
+    ul.appendChild(wrapper);
+  });
+  unitsPanel.appendChild(ul);
+
+  // populate unitSelect
+  unitSelect.innerHTML = '';
+  Object.keys(units).forEach(k => unitSelect.appendChild(opt(k,k)));
+  selected.unidade = unitSelect.value || Object.keys(units)[0];
+  unitSelect.value = selected.unidade;
+  // set targetCount from units config if present
+  const curUnits = units[selected.unidade];
+  targetCountInput.value = (curUnits && curUnits.aulas) ? curUnits.aulas : '';
+
+  // show config panel
+  configPanel.classList.remove('hidden');
+
+  // render calendar
+  renderCalendar();
+  renderAssignedTable();
+  renderJSONOut();
+}
+
+/* ---------- calendar rendering & assignment ---------- */
+function renderCalendar(){
+  calendarDiv.innerHTML = '';
+  if (!selected.unidade) return;
+  const calendario = dados.anos[selected.ano].calendario || {};
+  const dates = calendario[selected.unidade] || [];
+  dates.forEach(d => {
+    const cell = document.createElement('div');
+    cell.className = 'date-cell';
+    cell.dataset.date = d.data;
+    cell.innerHTML = '<div style="font-weight:600">'+formatHuman(d.data)+'</div><small>'+ (d.descricao||'') +'</small>';
+    // mark if assigned for current discipline & unit
+    const assigned = getAssignedFor(selected.ano, selected.modalidade, selected.turma, selected.disciplina, selected.unidade) || [];
+    if (assigned.find(a => a.date === d.data)) cell.classList.add('assigned');
+
+    cell.onclick = () => {
+      if (!selected.disciplina) { alert('Selecione uma disciplina primeiro.'); return; }
+      ensureProgramacaoNode();
+      const arr = getAssignedFor(selected.ano, selected.modalidade, selected.turma, selected.disciplina, selected.unidade);
+      const idx = arr.findIndex(x => x.date === d.data);
+      if (idx === -1) {
+        // add
+        arr.push({ date: d.data, slide: "", material: "", activity: "" });
+        cell.classList.add('assigned');
+      } else {
+        // remove
+        arr.splice(idx,1);
+        cell.classList.remove('assigned');
+      }
+      localStorage.setItem('programacao_disciplinas_v1', JSON.stringify(programacao));
+      renderAssignedTable();
+      renderJSONOut();
+    };
+
+    calendarDiv.appendChild(cell);
+  });
+}
+
+function getAssignedFor(ano, mod, turma, disciplina, unidade){
+  try {
+    if (!programacao[ano]) programacao[ano] = {};
+    if (!programacao[ano][mod]) programacao[ano][mod] = {};
+    if (!programacao[ano][mod][turma]) programacao[ano][mod][turma] = {};
+    if (!programacao[ano][mod][turma][disciplina]) programacao[ano][mod][turma][disciplina] = {};
+    if (!programacao[ano][mod][turma][disciplina][unidade]) programacao[ano][mod][turma][disciplina][unidade] = [];
+    return programacao[ano][mod][turma][disciplina][unidade];
+  } catch(e){
+    return [];
+  }
+}
+
+function ensureProgramacaoNode(){
+  if (!selected.ano || !selected.modalidade || !selected.turma || !selected.disciplina) return;
+  programacao[selected.ano] = programacao[selected.ano] || {};
+  programacao[selected.ano][selected.modalidade] = programacao[selected.ano][selected.modalidade] || {};
+  programacao[selected.ano][selected.modalidade][selected.turma] = programacao[selected.ano][selected.modalidade][selected.turma] || {};
+  programacao[selected.ano][selected.modalidade][selected.turma][selected.disciplina] = programacao[selected.ano][selected.modalidade][selected.turma][selected.disciplina] || {};
+}
+
+function renderAssignedTable(){
+  assignedTableWrap.innerHTML = '';
+  if (!selected.disciplina || !selected.unidade) return;
+  ensureProgramacaoNode();
+  const arr = getAssignedFor(selected.ano, selected.modalidade, selected.turma, selected.disciplina, selected.unidade);
+  if (!arr.length) {
+    assignedTableWrap.innerHTML = '<div class="small-muted">Nenhuma data atribuída nesta unidade.</div>';
+    return;
+  }
+  let html = '<table><tr><th>Data</th><th>Slide (link)</th><th>Material (link)</th><th>Atividade (link)</th></tr>';
+  arr.sort((a,b)=> a.date.localeCompare(b.date)).forEach((r,idx) => {
+    html += `<tr data-idx="${idx}">
+      <td>${r.date}</td>
+      <td><input class="link-input" data-field="slide" value="${escapeHtml(r.slide||'')}" placeholder="https://"></td>
+      <td><input class="link-input" data-field="material" value="${escapeHtml(r.material||'')}" placeholder="https://"></td>
+      <td><input class="link-input" data-field="activity" value="${escapeHtml(r.activity||'')}" placeholder="https://"></td>
+    </tr>`;
+  });
+  html += '</table>';
+  assignedTableWrap.innerHTML = html;
+
+  // attach listeners to inputs
+  assignedTableWrap.querySelectorAll('input.link-input').forEach(inp => {
+    inp.onchange = (e) => {
+      const tr = inp.closest('tr');
+      const idx = parseInt(tr.dataset.idx);
+      const field = inp.dataset.field;
+      const arr = getAssignedFor(selected.ano, selected.modalidade, selected.turma, selected.disciplina, selected.unidade);
+      arr[idx][field] = inp.value.trim();
+      localStorage.setItem('programacao_disciplinas_v1', JSON.stringify(programacao));
+      renderJSONOut();
+    };
+  });
+}
+
+/* ---------- auto distribuir (simples) ---------- */
+function autoDistribuir(target){
+  ensureProgramacaoNode();
+  const calendario = dados.anos[selected.ano].calendario[selected.unidade] || [];
+  const arr = getAssignedFor(selected.ano, selected.modalidade, selected.turma, selected.disciplina, selected.unidade);
+  // remove duplicates if any
+  const assignedDates = new Set(arr.map(a=>a.date));
+  for (let d of calendario) {
+    if (arr.length >= target) break;
+    if (!assignedDates.has(d.data)) {
+      arr.push({ date: d.data, slide:"", material:"", activity:"" });
+      assignedDates.add(d.data);
+    }
+  }
+  localStorage.setItem('programacao_disciplinas_v1', JSON.stringify(programacao));
+  renderCalendar();
+  renderAssignedTable();
+  renderJSONOut();
+}
+
+/* ---------- util e UI helpers ---------- */
+function renderJSONOut(){
+  jsonOut.textContent = JSON.stringify(programacao, null, 2);
+}
+
+function formatHuman(iso){
+  try {
+    const d = new Date(iso + 'T00:00:00');
+    return d.toLocaleDateString('pt-BR',{weekday:'short', day:'2-digit', month:'2-digit'});
+  } catch(e){ return iso; }
+}
+
+function opt(v,t){ const o = document.createElement('option'); o.value=v; o.textContent=t; return o; }
+
+function escapeHtml(s){
+  if(!s) return '';
+  return (''+s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+/* ---------- helper: unidades padrão por modalidade ---------- */
+function defaultUnitsForModalidade(modId){
+  const mod = dados.anos[Object.keys(dados.anos)[0]].modalidades[modId];
+  if (!mod) return { "I Unidade": {}, "II Unidade": {} };
+  const id = (modId||'').toLowerCase();
+  if (id === 'integrado') return { "I Unidade": {}, "II Unidade": {}, "III Unidade": {} };
+  // subsequente e proeja -> 2 unidades
+  return { "I Unidade": {}, "II Unidade": {} };
+}
+
 </script>
 
 </body>
